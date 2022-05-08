@@ -1,5 +1,7 @@
 import json
 import time
+import os
+dirname = os.getcwd()
 
 from flask import Flask, jsonify
 from flask import request
@@ -26,21 +28,22 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 def index():
     if(request.method=='POST'):
         print('request came')
-        f = open(r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file.wav', 'wb')
+
+        f = open(os.path.join(dirname, 'Music_wav\\file.wav'), 'wb')
         f.write(request.data)
         f.close()
-        subprocess.call(['ffmpeg','-y', '-i', r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file.wav',
-                         r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file_output.wav'],shell=True)
+        subprocess.call(['ffmpeg','-y', '-i', os.path.join(dirname, 'Music_wav\\file.wav'),
+                         os.path.join(dirname, 'Music_wav\\file_output.wav')],shell=True)
 
-        x, sr = librosa.load(r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file.wav', sr=48000)
+        x, sr = librosa.load(os.path.join(dirname, 'Music_wav\\file.wav'), sr=48000)
         y = librosa.resample(x, 48000, 44100)
-        sf.write(r"C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\final_file.wav",y,44100)
-        Paths.getInstance().setRecordingPath(r"C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\final_file.wav")
+        sf.write(os.path.join(dirname, 'Music_wav\\file.wav'),y,44100)
+        Paths.getInstance().setRecordingPath(os.path.join(dirname, 'Music_wav\\final_file.wav'))
         #
         audio = Audio(correlationSyncNoFilter(), invariantAlgorithm(),
                       mongodb_database("mongodb://localhost:27017",
                                        r'final_file.wav'),
-                      r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\{}'
+                      os.path.join(dirname, 'Music_wav\\{}')
                       )
         result, songs_found = audio.result_from_database()
         import pymongo
@@ -73,21 +76,21 @@ def sync():
 
     if (request.method == 'POST'):
         print('request came')
-        Paths.getInstance().setRecordingPath(r"C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\final_file.wav")
+        Paths.getInstance().setRecordingPath(os.path.join(dirname, 'Music_wav\\final_file.wav'))
         songName = request.form.get('song')
         print(songName)
         file = request.files['blob']
-        file.save(r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file.wav')
-        subprocess.call(['ffmpeg', '-y', '-i', r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file.wav',
-                         r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\final_file.wav'], shell=True)
+        file.save(os.path.join(dirname, 'Music_wav\\file.wav'))
+        subprocess.call(['ffmpeg', '-y', '-i', os.path.join(dirname, 'Music_wav\\file.wav'),
+                         os.path.join(dirname, 'Music_wav\\final_file.wav')], shell=True)
 
-        x, sr = librosa.load(r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\file.wav', sr=48000)
+        x, sr = librosa.load(os.path.join(dirname, 'Music_wav\\file.wav'), sr=48000)
         y = librosa.resample(x, 48000, 44100)
-        sf.write(r"C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\final_file.wav", y, 44100)
+        sf.write(os.path.join(dirname, 'Music_wav\\final_file.wav'), y, 44100)
         audio = Audio(correlationSyncNoFilter(), invariantAlgorithm(),
                       mongodb_database("mongodb://localhost:27017",
                                        r'final_file.wav'),
-                      r'C:\Users\tarun\OneDrive\Desktop\Documents\Music_wav\{}'
+                      os.path.join(dirname, 'Music_wav\\{}')
                       )
         return {"syncPoint":audio.sync_audio(songName,False)}
 
