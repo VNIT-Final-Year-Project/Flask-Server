@@ -1,4 +1,3 @@
-
 import os
 dirname = os.getcwd()
 
@@ -36,9 +35,9 @@ def index():
 
         x, sr = librosa.load(os.path.join(dirname, 'Music_wav\\file.wav'), sr=48000)
         y = librosa.resample(x, 48000, 44100)
-        sf.write(os.path.join(dirname, 'Music_wav\\file.wav'),y,44100)
+        sf.write(os.path.join(dirname, 'Music_wav\\final_file.wav'),y,44100)
         Paths.getInstance().setRecordingPath(os.path.join(dirname, 'Music_wav\\final_file.wav'))
-        #
+
         audio = Audio(correlationSyncNoFilter(), invariantAlgorithm(),
                       mongodb_database("mongodb://localhost:27017",
                                        r'final_file.wav'),
